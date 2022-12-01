@@ -33,13 +33,10 @@ const typeDefs = gql`
     created_at: String
     count: Int
     pageNum: Int
-    order: Order
+    orderBy: String
     categories: String
-    author: Int
-  }
-  enum Order {
-    DESC
-    ASC
+    authorId: Int
+    limit:Int
   }
   input updateUserInput {
     first_name: String
