@@ -71,7 +71,6 @@ const Query = {
     });
   },
   Posts: async (_, { postFilters }, { prisma }) => {
-    console.log(postFilters);
     let queryOptions = {};
     if (postFilters.title)
       queryOptions.where = {
@@ -81,10 +80,24 @@ const Query = {
       queryOptions.where = {
         body: { contains: postFilters.body, mode: "insensitive" },
       };
-    // if (postFilters.author)
-    //   queryOptions.where = {
-    //     body: { author: { id: parseInt(postFilters.author) } },
-    //   };
+    if (postFilters.authorId)
+      queryOptions.where = { authorId: parseInt(postFilters.authorId) };
+    //order by
+    if (postFilters.orderBy) {
+      const field = postFilters.orderBy.split(",")[0].trim();
+      const order = postFilters.orderBy.split(",")[1].trim();
+      queryOptions.orderBy = { [field]: order };
+    }
+    if (postFilters.limit) {
+      queryOptions.take = parseInt(postFilters.limit);
+    }
+    //pagination
+    if (postFilters.pageNum && postFilters.limit) {
+      let skip =
+        (parseInt(postFilters.pageNum) - 1) * parseInt(postFilters.limit);
+      queryOptions.skip = skip;
+      queryOptions.take = parseInt(postFilters.limit);
+    }
     const result = await prisma.post.findMany(queryOptions);
     return result;
   },
