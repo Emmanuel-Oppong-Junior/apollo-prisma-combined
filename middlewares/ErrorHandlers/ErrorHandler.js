@@ -5,8 +5,8 @@ const errorHandler = (err) => {
     err.message = "Invalid Database Query";
   }
   //check if error is a validation error
-  if (err.message.includes("validation")) {
-    err.message = "Input Validation Error";
+  if (err.message.includes("ValidationError")) {
+    return err.message;
   }
   return err;
 };
